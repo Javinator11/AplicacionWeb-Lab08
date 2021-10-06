@@ -1,0 +1,22 @@
+.navbar{
+    background-color: #3fb562 !important;
+}
+
+.storeName:visited{
+    color: white !important;
+}
+
+a.product-list-link:link{
+    color: white !important;
+    text-decoration: none !important;
+}
+
+a.product-list-link:visited{
+    color: white !important;
+    text-decoration: none !important;
+}
+
+a.product-list-link:hover{
+    color: rgba(255, 255, 255, 0.555) !important;
+    text-decoration: none !important;
+}
