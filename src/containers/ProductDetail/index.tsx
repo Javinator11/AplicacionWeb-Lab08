@@ -1,3 +1,4 @@
+import { colors } from "@material-ui/core";
 import React from "react";
 import ProductInfo from "../../components/ProductInfo";
 import ProductService from "../../services/ProductService";
@@ -38,7 +39,7 @@ class ProductDetail extends React.Component<{}, ProductState> {
      */
     render() {
         return (
-            <ProductInfo product={this.state.product} colors={this.state.colors} selectedColor={this.state.selectedColor} changedColor={this.changedColor} />
+            <ProductInfo product={this.state.product} colors={this.state.colors} sizes={this.state.sizes} selectedSize={this.state.selectedSize} selectedColor={this.state.selectedColor} changedColor={this.changedColor} changedSize={this.changedSize} sku={this.state.sku} />
         )
     }
 
@@ -56,7 +57,16 @@ class ProductDetail extends React.Component<{}, ProductState> {
                 let sizes = [] as string[];
 
                 if (colors.length  >= 1) {
+                    const defaultSelectedColor = colors[0];
                     sizes = helper.getSizes(colors[0]);
+
+                    if (sizes.length >= 2) {
+                        const defaultSelectedSize = sizes[0];
+                        const sku = helper.getSkus(defaultSelectedColor, defaultSelectedSize);
+                        this.setState({ selectedSize: defaultSelectedSize, sku });
+                    }
+
+                    this.setState({ selectedColor: defaultSelectedColor });
                 }
 
                 console.log("Sizes: " + sizes);
@@ -70,11 +80,34 @@ class ProductDetail extends React.Component<{}, ProductState> {
     changedColor = (event: any) => {
         let target = event.currentTarget as HTMLSelectElement;
         let value = target.value;
+        const helper = this.state.helper;
+        const sizes = helper.getSizes(value);
 
         console.log("selectedColor: " + value);
 
         this.setState({
-            selectedColor: value
+            selectedColor: value,
+            sizes
+        })
+
+        if (sizes.length >= 2) {
+            const defaultSelectedSize = sizes[0];
+            const sku = helper.getSkus(value, sizes[0])
+            this.setState({ selectedSize: defaultSelectedSize, sku });
+        }
+    }
+
+    changedSize = (event: any) => {
+        let target = event.currentTarget as HTMLSelectElement;
+        let value = target.value;
+        const helper = this.state.helper;
+        const sku = helper.getSkus(this.state.selectedColor, this.state.selectedSize);
+
+        console.log("selectedSize: " + value);
+
+        this.setState({
+            selectedColor: value,
+            sku
         })
     } 
 }

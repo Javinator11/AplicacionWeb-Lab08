@@ -14,12 +14,17 @@ import {
   Divider,
 } from "@material-ui/core";
 import React from "react";
+import Sku from "../../types/Sku"
 
 interface ProductInfoProps {
   product: Product;
   colors: string[];
+  sizes: string[];
   selectedColor: string;
-  changedColor(event: any): void
+  selectedSize: string;
+  changedColor(event: any): void;
+  changedSize(event: any): void;
+  sku: Sku;
 }
 
 /**
@@ -42,16 +47,14 @@ const ProductInfo : React.FC<ProductInfoProps>  = (props) => {
   var comments: any[] = [];
 
   props.colors.forEach( (color) => {
-    colors.push(<option value={color}>{color}</option>);
+    colors.push(<option style={{ color: "black" }} value={color}>{color}</option>);
   }); 
 
-  var selectedSize = "";
-  if (props.product !== undefined && props.product.childSkus !== undefined) {
-    selectedSize = props.product.childSkus[0].size;
-    props.product.childSkus.forEach( (sku) => {
-      sizes.push(<MenuItem value={sku.size}>{sku.size}</MenuItem>);
-    }); 
+  props.sizes.forEach((size) => {
+    sizes.push(<option style={{ color: "black" }} value={size}>{size}</option>);
+  });
 
+  if (props.product !== undefined && props.product.childSkus !== undefined) {
     props.product.comments.forEach( (comment) => {
       comments.push(
         <React.Fragment>
@@ -60,10 +63,12 @@ const ProductInfo : React.FC<ProductInfoProps>  = (props) => {
                 primary={comment.author}
                 secondary={
                   <React.Fragment>
-                    <Typography>
+                    <Typography style={{ color: "white" }}>
                       {comment.body}
+                    </Typography >
+                    <Typography style={{ color: "white" }}>
+                      {comment.created}
                     </Typography>
-                    {comment.created}
                   </React.Fragment>
                 }
               />
@@ -113,7 +118,7 @@ const ProductInfo : React.FC<ProductInfoProps>  = (props) => {
             <InputLabel className="productLabel" id="color-label">
               Color
             </InputLabel>
-            <Select labelId="color-label" id="color-select" native={true} label="Color" value={props.selectedColor} onChange={props.changedColor}>
+            <Select labelId="color-label" id="color-select" className="selectLabel" native={true} label="Color" value={props.selectedColor} onChange={props.changedColor}>
               {colors}
             </Select>
           </Grid>
@@ -121,7 +126,7 @@ const ProductInfo : React.FC<ProductInfoProps>  = (props) => {
             <InputLabel className="productLabel" id="size-label">
               Size
             </InputLabel>
-            <Select labelId="size-label" id="size-select" label="Size" value={selectedSize}>
+            <Select labelId="size-label" id="size-select" className="selectLabel" native={true} label="Size" value={props.selectedSize} onChange={props.changedSize}>
               {sizes}
             </Select>
           </Grid>
@@ -130,7 +135,7 @@ const ProductInfo : React.FC<ProductInfoProps>  = (props) => {
             <InputLabel className="productLabel" id="quantity-label">
               Quantity
             </InputLabel>
-            <Select labelId="quantity-label" id="quantity-select" label="Quantity" value={1}>
+            <Select labelId="quantity-label" className="selectLabel" id="quantity-select" label="Quantity" value={1}>
               <MenuItem value="1">1</MenuItem>
               <MenuItem value="2">2</MenuItem>
               <MenuItem value="3">3</MenuItem>
@@ -141,7 +146,7 @@ const ProductInfo : React.FC<ProductInfoProps>  = (props) => {
           <Grid item lg={10} />
 
           <Grid item lg={4}>
-            <Button className="cartButton" variant="contained">
+            <Button className="addCartButton" variant="contained" onClick={() => console.log(props.sku)}>
               Add to Cart
             </Button>
           </Grid>
@@ -155,7 +160,7 @@ const ProductInfo : React.FC<ProductInfoProps>  = (props) => {
         </Grid>
         <Grid item lg={8} />
         <Grid item lg={12}>
-          <List>
+          <List className="comments-body">
             {comments}
           </List>
         </Grid>
